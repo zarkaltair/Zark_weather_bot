@@ -1,4 +1,4 @@
-# Version bot for deploy to heroku
+# Version bot for test on localhost
 # Import all need libraries for the bot
 import pyowm
 import asyncio
@@ -26,6 +26,7 @@ from config import PROXY_URL
 
 
 # Create log string
+# logging.basicConfig(format=u'[ LINE:%(lineno)+3s ]#%(levelname)+8s [%(asctime)s]  %(message)s', level=logging.INFO)
 logging.basicConfig(level=logging.INFO)
 
 # pass to bot token and proxy url
