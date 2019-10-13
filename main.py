@@ -33,7 +33,7 @@ WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
 
 WEBAPP_HOST = '0.0.0.0'
 WEBAPP_PORT = os.environ.get('PORT')
-CHAT_ID = 252027450
+CHAT_ID = -1001116481457
 
 
 # Create main config for bot
@@ -124,18 +124,6 @@ async def get_city(message: types.Message, state: FSMContext):
         msg = "What the fuck is this? Such city dosn't exist!!!"
         await bot.send_message(message.chat.id, msg, reply_to_message_id=message.message_id)
 
-'''
-# Create function which process any text message from user
-@dp.message_handler()
-async def echo_message(msg: types.Message):
-    await bot.send_message(msg.chat.id, msg.text)
-
-# Create function which process any message from user
-@dp.message_handler(content_types=ContentType.ANY)
-async def unknown_message(msg: types.Message):
-    message_text = 'What the fuck is this?'
-    await msg.reply(message_text)
-
 
 # Define the function that sends weather to the chat on a schedule
 @dp.message_handler()
@@ -146,22 +134,17 @@ async def sched():
 
 # Create scheduler with interval 1 day
 scheduler = AsyncIOScheduler()
-scheduler.add_job(sched, 'cron', day_of_week='mon-sun', hour=16, minute=25)
+scheduler.add_job(sched, 'cron', day_of_week='mon-sun', hour=2, minute=00)
 scheduler.start()
-'''
 
 
 # Create the function to startup my bot
 async def on_startup(dp):
-    # msg = "<code>I'm started, matherfucker!!!</code>"
-    # await bot.send_message(chat_id=CHAT_ID, text=msg)
     await bot.set_webhook(WEBHOOK_URL)
 
 
 # Create the function to shutdown my bot
 async def on_shutdown(dp):
-    # msg = "<code>I'm finished, matherfucker!!!</code>"
-    # await bot.send_message(chat_id=CHAT_ID, text=msg)
     await bot.close()
 
 
