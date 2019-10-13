@@ -27,7 +27,7 @@ logging.basicConfig(level=logging.INFO)
 
 # Config for bot
 TOKEN = os.environ['TOKEN']
-WEBHOOK_HOST = 'https://zark_weather_bot.herokuapp.com'
+WEBHOOK_HOST = 'https://zark-weather-bot.herokuapp.com'
 WEBHOOK_PATH = '/webhook/'
 WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
 
