@@ -153,8 +153,9 @@ scheduler.start()
 
 # Create the function to startup my bot
 async def on_startup(dp):
-    msg = "<code>I'm started, matherfucker!!!</code>"
-    await bot.send_message(chat_id=CHAT_ID, text=msg)
+    # msg = "<code>I'm started, matherfucker!!!</code>"
+    # await bot.send_message(chat_id=CHAT_ID, text=msg)
+    await bot.set_webhook(WEBHOOK_URL)
 
 
 # Create the function to shutdown my bot
