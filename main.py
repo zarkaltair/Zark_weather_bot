@@ -1,5 +1,6 @@
 # Version bot for deploy to heroku
 # Import all need libraries for the bot
+import os
 import pyowm
 import asyncio
 import logging
@@ -8,9 +9,9 @@ import datetime
 from aiogram import Bot, types
 from aiogram.utils import executor
 from aiogram.types import ParseMode
-# from aiogram.utils.emoji import emojize
 from aiogram.dispatcher import Dispatcher
 from aiogram.types.message import ContentType
+from aiogram.utils.executor import start_webhook
 
 from aiogram.dispatcher.storage import FSMContext
 from aiogram.dispatcher.filters.state import State
@@ -20,20 +21,26 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from config import TOKEN
-from config import CHAT_ID
-from config import PROXY_URL
-
 
 # Create log string
 logging.basicConfig(level=logging.INFO)
 
-# pass to bot token and proxy url
+# Config for bot
+TOKEN = os.environ['TOKEN']
+WEBHOOK_HOST = 'https://zark_weather_bot.herokuapp.com'
+WEBHOOK_PATH = '/webhook/'
+WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
+
+WEBAPP_HOST = '0.0.0.0'
+WEBAPP_PORT = os.environ.get('PORT')
+
+
+# Create main config for bot
 loop = asyncio.get_event_loop()
-bot = Bot(token=TOKEN, proxy=PROXY_URL, parse_mode='HTML')
-# bot = Bot(token=TOKEN, parse_mode='HTML')
+bot = Bot(token=TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage, loop=loop)
+
 
 # Array of cities
 arr = ['Москва', 'Екатеринбург', 'Петухово', 'Омск', 'Новосибирск', 'Шерегеш']
@@ -158,7 +165,10 @@ async def on_shutdown(dp):
 
 # Main script
 if __name__ == '__main__':
-    executor.start_polling(dp, on_startup=on_startup, on_shutdown=on_shutdown)
+    start_webhook(dispatcher=dp, webhook_path=WEBHOOK_PATH,
+                  on_startup=on_startup, on_shutdown=on_shutdown,
+                  host=WEBAPP_HOST, port=WEBAPP_PORT)
+
 
 '''
 start - start command
