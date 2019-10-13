@@ -37,7 +37,7 @@ WEBAPP_PORT = os.environ.get('PORT')
 
 # Create main config for bot
 loop = asyncio.get_event_loop()
-bot = Bot(token=TOKEN)
+bot = Bot(token=TOKEN, parse_mode='HTML')
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage, loop=loop)
 
