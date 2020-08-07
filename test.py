@@ -8,21 +8,18 @@ import datetime
 from aiogram import Bot, types
 from aiogram.utils import executor
 from aiogram.types import ParseMode
-# from aiogram.utils.emoji import emojize
 from aiogram.dispatcher import Dispatcher
 from aiogram.types.message import ContentType
 
 from aiogram.dispatcher.storage import FSMContext
 from aiogram.dispatcher.filters.state import State
 from aiogram.dispatcher.filters.state import StatesGroup
-
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from config import TOKEN
 from config import CHAT_ID
-from config import PROXY_URL
 
 
 # Create log string
@@ -31,8 +28,7 @@ logging.basicConfig(level=logging.INFO)
 
 # pass to bot token and proxy url
 loop = asyncio.get_event_loop()
-bot = Bot(token=TOKEN, proxy=PROXY_URL, parse_mode='HTML')
-# bot = Bot(token=TOKEN, parse_mode='HTML')
+bot = Bot(token=TOKEN, parse_mode='HTML')
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage, loop=loop)
 
@@ -107,6 +103,7 @@ async def get_city(message: types.Message, state: FSMContext):
     city = message.text
     await message.answer(f'You are entered city: {city}')
     await state.update_data(city=city)
+
     try:
         logging.info('Try entering city to pyowm')
         msg = get_weather([city])
@@ -117,32 +114,6 @@ async def get_city(message: types.Message, state: FSMContext):
         msg = "What the fuck is this? Such city dosn't exist!!!"
         await bot.send_message(message.chat.id, msg, reply_to_message_id=message.message_id)
 
-'''
-# Create function which process any text message from user
-@dp.message_handler()
-async def echo_message(msg: types.Message):
-    await bot.send_message(msg.chat.id, msg.text)
-
-# Create function which process any message from user
-@dp.message_handler(content_types=ContentType.ANY)
-async def unknown_message(msg: types.Message):
-    message_text = 'What the fuck is this?'
-    await msg.reply(message_text)
-
-
-# Define the function that sends weather to the chat on a schedule
-@dp.message_handler()
-async def sched():
-    msg = get_weather(arr)
-    await bot.send_message(chat_id=CHAT_ID, text=msg)
-
-
-# Create scheduler with interval 1 day
-scheduler = AsyncIOScheduler()
-scheduler.add_job(sched, 'cron', day_of_week='mon-sun', hour=16, minute=25)
-scheduler.start()
-'''
-
 
 # Create the function to startup my bot
 async def on_startup(dp):
@@ -152,8 +123,6 @@ async def on_startup(dp):
 
 # Create the function to shutdown my bot
 async def on_shutdown(dp):
-    # msg = "<code>I'm finished, matherfucker!!!</code>"
-    # await bot.send_message(chat_id=CHAT_ID, text=msg)
     await bot.close()
 
 
@@ -167,3 +136,4 @@ weather - get weather
 city - get city weather
 goodbye - bye
 '''
+
