@@ -1,4 +1,4 @@
-pyowm==2.5
+pyowm
 asyncio
 datetime
 aiogram
