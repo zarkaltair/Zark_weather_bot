@@ -44,7 +44,7 @@ dp = Dispatcher(bot, storage=storage, loop=loop)
 
 
 # Array of cities
-arr = ['Москва', 'Екатеринбург', 'Петухово', 'Омск', 'Новосибирск', 'Шерегеш']
+arr = ['Москва', 'Екатеринбург', 'Петухово', 'Омск', 'Новосибирск', 'Шерегеш', 'Верх-Катавка']
 
 
 # Function for get weather
