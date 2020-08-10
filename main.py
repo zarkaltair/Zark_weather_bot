@@ -127,7 +127,7 @@ async def get_city(message: types.Message, state: FSMContext):
 
 # Define the function that sends weather to the chat on a schedule
 @dp.message_handler()
-async def sched():
+async def sched(arr):
     msg = get_weather(arr)
     await bot.send_message(chat_id=CHAT_ID, text=msg)
 
