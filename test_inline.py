@@ -87,7 +87,7 @@ async def inline_query_process(inline_query: InlineQuery):
 
 # Define the function that sends weather to the chat on a schedule
 @dp.message_handler()
-async def sched():
+async def sched(arr):
     msg = get_weather(arr)
     await bot.send_message(chat_id=252027450, text=msg)
 
@@ -105,7 +105,7 @@ async def on_shutdown(dp):
 
 # Main script
 if __name__ == '__main__':
-    sched()
+#    sched()
     executor.start_polling(dp, on_startup=on_startup, on_shutdown=on_shutdown)
 
 '''
