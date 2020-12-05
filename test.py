@@ -3,7 +3,7 @@
 import pyowm
 import asyncio
 import logging
-import datetime
+# import datetime
 
 from aiogram import Bot, types
 from aiogram.utils import executor
@@ -19,7 +19,7 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from config import TOKEN
-from config import CHAT_ID
+# from config import ARR_ID
 
 
 # Create log string
@@ -33,7 +33,12 @@ storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage, loop=loop)
 
 # Array of cities
-arr = ['Москва', 'Екатеринбург', 'Петухово', 'Омск', 'Новосибирск', 'Шерегеш']
+# arr = ['Москва', 'Екатеринбург', 'Омск', 'Новосибирск', 'Шерегеш']
+arr_dict = {
+    -304358952: ['Москва', 'Екатеринбург', 'Омск'],                               # Group_for_test
+    -1001341422770: ['Симферополь', 'Москва', 'Екатеринбург', 'Омск', 'Новосибирск', 'Шерегеш'], # Gesh
+    # -1001116481457: ['Москва', 'Екатеринбург', 'Омск', 'Новосибирск', 'Шерегеш']  # Traktir_u_zaitca
+}
 
 
 # Function for get weather
@@ -48,7 +53,7 @@ def get_weather(arr_towns):
         wind = round(weather.get_wind()['speed'])
         # status = weather.get_status()
         status = weather.get_detailed_status()
-        answer += f'<b>{town}</b>\n<code>t: {temp} °C, w: {wind} м/с, {status}.</code>\n'
+        answer += f'<b>{town.capitalize()}</b>\n<code>t: {temp} °C, w: {wind} м/с, {status}.</code>\n'
     return answer
 
 
@@ -71,7 +76,7 @@ async def process_help_command(message: types.Message):
 # Create function which process command /weather
 @dp.message_handler(commands=['weather'])
 async def process_weather_command(message: types.Message):
-    msg = get_weather(arr)
+    msg = get_weather(arr_dict[message.chat.id])
     await bot.send_message(message.chat.id, msg, reply_to_message_id=message.message_id)
 
 
@@ -101,7 +106,7 @@ async def get_city(message: types.Message, state: FSMContext):
     logging.info('Start entering city')
     # Process name city
     city = message.text
-    await message.answer(f'You are entered city: {city}')
+    await message.answer(f'You are entered city: {city.capitalize()}')
     await state.update_data(city=city)
 
     try:
@@ -111,14 +116,28 @@ async def get_city(message: types.Message, state: FSMContext):
         await state.finish()
     except:
         await state.finish()
-        msg = "What the fuck is this? Such city dosn't exist!!!"
+        msg = "What the fuck is this? Such city doesn't exist!!!"
         await bot.send_message(message.chat.id, msg, reply_to_message_id=message.message_id)
+
+
+# Define the function that sends weather to the chat on a schedule
+@dp.message_handler()
+async def sched():
+    for id, arr in arr_dict.items():
+        msg = get_weather(arr)
+        await bot.send_message(chat_id=id, text=msg)
+
+
+# Create scheduler with interval 30 seconds
+scheduler = AsyncIOScheduler()
+scheduler.add_job(sched, 'interval', seconds=300)
+scheduler.start()
 
 
 # Create the function to startup my bot
 async def on_startup(dp):
     msg = "<code>I'm started, matherfucker!!!</code>"
-    await bot.send_message(chat_id=CHAT_ID, text=msg)
+    await bot.send_message(chat_id=252027450, text=msg)
 
 
 # Create the function to shutdown my bot
