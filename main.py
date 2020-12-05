@@ -33,7 +33,7 @@ WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
 
 WEBAPP_HOST = '0.0.0.0'
 WEBAPP_PORT = os.environ.get('PORT')
-CHAT_ID = -1001116481457
+# ARR_ID = [-1001116481457, -1001341422770]
 
 
 # Create main config for bot
@@ -44,7 +44,12 @@ dp = Dispatcher(bot, storage=storage, loop=loop)
 
 
 # Array of cities
-arr = ['Москва', 'Екатеринбург', 'Петухово', 'Омск', 'Новосибирск', 'Шерегеш', 'Верх-Катавка']
+# arr = ['Москва', 'Екатеринбург', 'Омск', 'Новосибирск', 'Шерегеш']
+arr_dict = {
+    # -304358952: ['Москва', 'Екатеринбург', 'Омск'],                               # Group_for_test
+    -1001341422770: ['Симферополь', 'Москва', 'Екатеринбург', 'Омск', 'Новосибирск', 'Шерегеш'], # Gesh
+    -1001116481457: ['Москва', 'Екатеринбург', 'Омск', 'Новосибирск', 'Шерегеш']  # Traktir_u_zaitca
+}
 
 
 # Function for get weather
@@ -59,7 +64,7 @@ def get_weather(arr_towns):
         wind = round(weather.get_wind()['speed'])
         # status = weather.get_status()
         status = weather.get_detailed_status()
-        answer += f'<b>{town}</b>\n<code>t: {temp} °C, w: {wind} м/с, {status}.</code>\n'
+        answer += f'<b>{town.capitalize()}</b>\n<code>t: {temp} °C, w: {wind} м/с, {status}.</code>\n'
     return answer
 
 
@@ -82,7 +87,7 @@ async def process_help_command(message: types.Message):
 # Create function which process command /weather
 @dp.message_handler(commands=['weather'])
 async def process_weather_command(message: types.Message):
-    msg = get_weather(arr)
+    msg = get_weather(arr_dict[message.chat.id])
     await bot.send_message(message.chat.id, msg, reply_to_message_id=message.message_id)
 
 
@@ -112,7 +117,7 @@ async def get_city(message: types.Message, state: FSMContext):
     logging.info('Start entering city')
     # Process name city
     city = message.text
-    await message.answer(f'You are entered city: {city}')
+    await message.answer(f'You are entered city: {city.capitalize()}')
     await state.update_data(city=city)
     try:
         logging.info('Try entering city to pyowm')
@@ -121,15 +126,16 @@ async def get_city(message: types.Message, state: FSMContext):
         await state.finish()
     except:
         await state.finish()
-        msg = "What the fuck is this? Such city dosn't exist!!!"
+        msg = "What the fuck is this? Such city doesn't exist!!!"
         await bot.send_message(message.chat.id, msg, reply_to_message_id=message.message_id)
 
 
 # Define the function that sends weather to the chat on a schedule
 @dp.message_handler()
 async def sched():
-    msg = get_weather(arr)
-    await bot.send_message(chat_id=CHAT_ID, text=msg)
+    for id, arr in arr_dict.items():
+        msg = get_weather(arr)
+        await bot.send_message(chat_id=id, text=msg)
 
 
 # Create scheduler with interval 1 day
