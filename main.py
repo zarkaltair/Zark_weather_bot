@@ -44,7 +44,7 @@ dp = Dispatcher(bot, storage=storage, loop=loop)
 
 
 # Array of cities
-# arr = ['Москва', 'Екатеринбург', 'Омск', 'Новосибирск', 'Шерегеш']
+arr = ['Москва', 'Екатеринбург', 'Омск', 'Новосибирск', 'Шерегеш']
 arr_dict = {
     # -304358952: ['Москва', 'Екатеринбург', 'Омск'],                               # Group_for_test
     -1001341422770: ['Симферополь', 'Москва', 'Екатеринбург', 'Омск', 'Новосибирск', 'Шерегеш'], # Gesh
@@ -87,7 +87,10 @@ async def process_help_command(message: types.Message):
 # Create function which process command /weather
 @dp.message_handler(commands=['weather'])
 async def process_weather_command(message: types.Message):
-    msg = get_weather(arr_dict[message.chat.id])
+    if message.chat.id in arr_dict:
+        msg = get_weather(arr_dict[message.chat.id])
+    else:
+        msg = get_weather(arr)
     await bot.send_message(message.chat.id, msg, reply_to_message_id=message.message_id)
 
 
