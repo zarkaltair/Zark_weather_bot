@@ -122,15 +122,15 @@ async def get_city(message: types.Message, state: FSMContext):
 
 # Define the function that sends weather to the chat on a schedule
 @dp.message_handler()
-async def sched():
+async def sched(msg=None):
     for id, arr in arr_dict.items():
         msg = get_weather(arr)
-        await bot.send_message(chat_id=id, text=msg)
+        await bot.send_message(chat_id=252027450, text=msg)
 
 
 # Create scheduler with interval 30 seconds
 scheduler = AsyncIOScheduler()
-scheduler.add_job(sched, 'interval', seconds=300)
+scheduler.add_job(sched, 'interval', seconds=10)
 scheduler.start()
 
 
