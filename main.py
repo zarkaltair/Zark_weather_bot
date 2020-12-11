@@ -166,6 +166,7 @@ if __name__ == '__main__':
 
 '''
 start - start command
+help - help command
 weather - get weather
 city - get city weather
 goodbye - bye
